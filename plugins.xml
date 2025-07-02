@@ -1,0 +1,17 @@
+<class_libraries>
+    <library path="simple_goal_checker">
+        <class type="vrobot_local_planner::SimpleGoalChecker" base_class_type="vrobot_local_planner::GoalChecker">
+            <description>Checks if current pose is within goal window for x,y and yaw</description>
+        </class>
+    </library>
+    <library path="stopped_goal_checker">
+        <class type="vrobot_local_planner::StoppedGoalChecker" base_class_type="vrobot_local_planner::GoalChecker">
+            <description>Checks linear and angular velocity after stopping</description>
+        </class>
+    </library>
+    <library path="rpp_controller">
+        <class type="vrobot_local_planner::RPPController" base_class_type="vrobot_local_planner::Controller">
+            <description>Regular Pure Pursuit Controller</description>
+        </class>
+    </library>
+</class_libraries>
