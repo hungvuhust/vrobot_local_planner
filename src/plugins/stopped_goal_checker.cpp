@@ -1,5 +1,3 @@
-#pragma once
-
 #include "vrobot_local_planner/plugins/stopped_goal_checker.hpp"
 #include "angles/angles.h"
 #include "nav2_util/geometry_utils.hpp"

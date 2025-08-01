@@ -281,12 +281,9 @@ geometry_msgs::msg::TwistStamped RPPController::computeVelocityCommands(
   // populate and return message
   geometry_msgs::msg::TwistStamped cmd_vel;
   cmd_vel.header = pose.header;
-  RCLCPP_INFO(logger_, "Linear velocity: %f, Angular velocity: %f", linear_vel,
-              angular_vel);
 
   // Set max speed to carrot speed if it is greater than the desired speed
   if (std::abs(linear_vel) > std::abs(carrot_pose.speed)) {
-    RCLCPP_INFO(logger_, "Carrot speed: %f, Sign: %f", carrot_pose.speed, sign);
     linear_vel = carrot_pose.speed * sign;
   }
 

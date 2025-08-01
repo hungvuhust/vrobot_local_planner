@@ -56,9 +56,11 @@ include_directories(
 # LIBRARY
 file(GLOB COMMON_SRC src/common/*.cpp)
 file(GLOB UTILS_SRC src/utils/*.cpp)
+file(GLOB CORE_SRC include/vrobot_local_planner/core/*.hpp)
 add_library(${PROJECT_NAME}_lib SHARED
   ${COMMON_SRC}
   ${UTILS_SRC}
+  ${CORE_SRC}
   src/controller_server.cpp
 )
 target_include_directories(${PROJECT_NAME}_lib  PUBLIC
@@ -70,6 +72,10 @@ ament_target_dependencies(${PROJECT_NAME}_lib
 )
 rosidl_target_interfaces(${PROJECT_NAME}_lib 
   ${PROJECT_NAME} "rosidl_typesupport_cpp"
+)
+rclcpp_components_register_nodes(
+  ${PROJECT_NAME}_lib
+  "vrobot_local_planner::ControllerServer"
 )
 
 # PLUGINS

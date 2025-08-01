@@ -27,27 +27,21 @@ void ControllerServer::on_configure() {
   try {
     // Initialize costmap
     if (!init_costmap()) {
-      RCLCPP_ERROR(get_logger(), "Failed to initialize costmap");
       throw std::runtime_error("Failed to initialize costmap");
     }
     // Initialize controllers
     if (!init_controllers()) {
-      RCLCPP_ERROR(get_logger(), "Failed to initialize controllers");
       throw std::runtime_error("Failed to initialize controllers");
     }
     // Initialize actions
     if (!init_actions()) {
-      RCLCPP_ERROR(get_logger(), "Failed to initialize actions");
       throw std::runtime_error("Failed to initialize actions");
     }
     // Initialize publishers and subscribers
     if (!init_publishers_subscribers()) {
-      RCLCPP_ERROR(get_logger(),
-                   "Failed to initialize publishers and subscribers");
       throw std::runtime_error(
           "Failed to initialize publishers and subscribers");
     }
-
     costmap_ros_->activate();
   } catch (const std::exception &e) {
     RCLCPP_ERROR(get_logger(), "Failed to configure controller server: %s",
@@ -107,17 +101,25 @@ bool ControllerServer::init_controllers() {
           node, goal_checker_ids_[i] + ".plugin",
           rclcpp::ParameterValue(default_goal_checker_types_[0]));
     }
+  } else {
+    RCLCPP_WARN(get_logger(), "No goal checker plugins found, using default");
+    goal_checker_ids_   = default_goal_checker_ids_;
+    goal_checker_types_ = default_goal_checker_types_;
   }
 
   get_parameter("controller_plugins", controller_ids_);
   RCLCPP_INFO(get_logger(), "controller_ids_: %zu", controller_ids_.size());
 
-  if (controller_ids_ == default_ids_) {
-    for (size_t i = 0; i < default_ids_.size(); ++i) {
+  if (controller_ids_.size() > 0) {
+    for (size_t i = 0; i < controller_ids_.size(); ++i) {
       vrobot_local_planner::declare_parameter_if_not_declared(
-          node, default_ids_[i] + ".plugin",
+          node, controller_ids_[i] + ".plugin",
           rclcpp::ParameterValue(default_types_[i]));
     }
+  } else {
+    RCLCPP_WARN(get_logger(), "No controller plugins found, using default");
+    controller_ids_   = default_ids_;
+    controller_types_ = default_types_;
   }
 
   controller_types_.resize(controller_ids_.size());
@@ -503,7 +505,7 @@ bool ControllerServer::getRobotPose(
 
 } // namespace vrobot_local_planner
 
-#include "rclcpp_components/register_node_macro.hpp"
+#include <rclcpp_components/register_node_macro.hpp>
 
 // Register the component with class_loader.
 // This acts as a sort of entry point, allowing the component to be discoverable
